@@ -1,0 +1,21 @@
+const path = require('path');
+
+module.exports = {
+    default: {
+      requireModule: ['ts-node/register'],
+      require: ['src/step-definitions/**/*.ts', 'src/support/**/*.ts'],
+      paths: ['src/features/**/*.feature'],
+      // paths: [
+      //   'src/features/login.feature',
+      //   'src/features/home.feature'
+      // ],
+      format: ['@cucumber/pretty-formatter'],
+      //publishQuiet: true,
+      parallel: 0,
+      // parallelType: "features",
+      retry: 0,
+      worldPrameters: {
+        timeout: 60000,
+      }
+    }
+  };
