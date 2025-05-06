@@ -27,7 +27,7 @@ Feature: Create board
     Background: 
         Given user at the home page 
 
-    @requireLogin
+    @requireLogin @createBoard
     Scenario: Create a new board
         When user click on Create button enter board tille "My New Board"
         And user click create button

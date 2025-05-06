@@ -60,6 +60,6 @@ Then('user should see the boards deleted successfully', async function (){
 });
 
 Then('user should see the boards reopened successfully', async function(){
-    const messageReopen = this.page.locator("");
-    await expect(messageReopen).toBeVisible();
+    const reopen = this.page.locator("//ul//li[@class= 'boards-page-board-section-list-item'][1]");
+    await expect(reopen).toBeVisible();
 });

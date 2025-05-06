@@ -11,7 +11,7 @@ module.exports = {
       // ],
       format: ['@cucumber/pretty-formatter'],
       //publishQuiet: true,
-      parallel: 0,
+      parallel: 1,
       // parallelType: "features",
       retry: 0,
       worldPrameters: {
