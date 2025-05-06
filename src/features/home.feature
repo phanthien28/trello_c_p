@@ -23,7 +23,6 @@
 
 @home
 Feature: Create board
-
    
     Background: 
         Given user at the home page 
