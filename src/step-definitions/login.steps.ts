@@ -4,6 +4,7 @@ import { LoginPage } from '../page-objects/LoginPage';
 
 let loginPage: LoginPage;
 
+
 Given('user navigates to the application {string}', async function(url: string){
     loginPage = new LoginPage(this.page)
     await loginPage.goto(url);
