@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'mcr.microsoft.com/playwright:v1.41.0-focal'  // Khớp với phiên bản Playwright trong package.json
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+    
     stages {
         stage('Checkout') {
             steps {
