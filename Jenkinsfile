@@ -12,7 +12,7 @@ pipeline {
                     docker.image('mcr.microsoft.com/playwright:v1.41.0-focal').inside {
                         sh 'npm install'
                         sh 'npx playwright install chromium'
-                        sh 'npx cucumber-js --require-module ts-node/register --require "./steps/**/*.ts" --format progress'
+                        sh 'npx cucumber-js'
                     }
                 }
             }
