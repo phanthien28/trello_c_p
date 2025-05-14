@@ -12,7 +12,7 @@ export class LoginPage{
 
     constructor(page: Page) {
         this.page = page;
-        this.loginButtonHome = page.locator("//a[@class ='Buttonsstyles__Button-sc-1jwidxo-0 kTwZBr']");
+        this.loginButtonHome = page.locator("//a[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login' and text() = 'Log in']");
         this.emailInput = page.locator("//input[@data-testid = 'username']");
         this.continueButton = page.locator('button[id = "login-submit"]');
         this.passwordInput = page.locator('input[type = "password"]');
@@ -24,11 +24,14 @@ export class LoginPage{
 
     async goto(url: string) {
         await this.page.goto(url);
-        await this.loginButtonHome.waitFor({ state: 'visible',timeout: 10000 });
+        await this.page.waitForLoadState('networkidle'); // chờ network ổn định
+        console.log('Navigating to URL:', url);
+        await this.loginButtonHome.waitFor({ state: 'visible',timeout: 30000 });
     }
 
     async clickLoginHome() {
-        await this.loginButtonHome.waitFor({state: 'visible'});
+        await this.page.waitForLoadState('networkidle'); // chờ network ổn định
+        await this.loginButtonHome.waitFor({ state: 'visible'});
         await this.loginButtonHome.click();
     }
 
