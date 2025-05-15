@@ -16,6 +16,7 @@ module.exports = {
       retry: 0,
       worldPrameters: {
         timeout: 60000,
+        defaultNavigationTimeout: 45000
       }
     }
   };

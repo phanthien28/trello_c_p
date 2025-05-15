@@ -12,7 +12,8 @@ export class LoginPage{
 
     constructor(page: Page) {
         this.page = page;
-        this.loginButtonHome = page.locator("//a[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login' and text() = 'Log in']");
+        //this.loginButtonHome = page.locator("//a[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login' and text() = 'Log in']");
+        this.loginButtonHome = page.locator("//div[@class = 'BigNavstyles__InnerHeader-sc-1mttgq7-2 kuxyBF']//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']//a[@class = 'Buttonsstyles__Button-sc-1jwidxo-0 kTwZBr']");
         this.emailInput = page.locator("//input[@data-testid = 'username']");
         this.continueButton = page.locator('button[id = "login-submit"]');
         this.passwordInput = page.locator('input[type = "password"]');
@@ -30,6 +31,7 @@ export class LoginPage{
     }
 
     async clickLoginHome() {
+        await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForLoadState('networkidle'); // chờ network ổn định
         await this.loginButtonHome.waitFor({ state: 'visible'});
         await this.loginButtonHome.click();
