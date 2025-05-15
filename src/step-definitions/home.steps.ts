@@ -14,22 +14,9 @@ When('user click on Create button enter board tille {string}', async function(bo
     await homePage.createBoard(boardTitle);
 });
 
-// When('user chooses Create Board option', async function() {
-//     await homePage.clickCreateBoardButton();
-// });
-
-// When('user chooses Create Board from Template option', async function(){
-//     await homePage.clickcreateWithTemplateButton();
-// });
-
 When('user click on Create button and chooses Kanban Template', async function(){
     await homePage.createBoardFromTemplate();
 });
-
-// When('user enter board tille {string}', async function(boardTitle: string) {
-//     await homePage.fillBoardTitle(boardTitle);
-
-// });
 
 When('user click create button', async function() {
     await homePage.clickCreateButton();
