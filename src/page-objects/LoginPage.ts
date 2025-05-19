@@ -18,7 +18,7 @@ export class LoginPage{
         this.continueButton = page.locator('button[id = "login-submit"]');
         this.passwordInput = page.locator('input[type = "password"]');
         this.loginButton = page.locator('#login-submit span.css-178ag6o');
-        this.goDashboardButton = page.locator("div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
+        this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
 
         //div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']
     }
