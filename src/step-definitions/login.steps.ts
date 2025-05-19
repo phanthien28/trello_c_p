@@ -12,7 +12,7 @@ Given('user navigates to the application {string}', async function(url: string){
 Given('user click login home button', async function () {
     await loginPage.clickLoginHome();
 })
-//l
+
 When('user enter email {string} and password {string}', async function(email: string, password: string){
     await loginPage.login(email, password)
 });   

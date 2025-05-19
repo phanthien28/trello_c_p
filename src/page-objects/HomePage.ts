@@ -34,14 +34,12 @@ export class HomePage{
     }
 
     async clickCreateHomeButton(){
-        // Trong HomePage.ts, trước khi click
-        console.log('Waiting for createHomeButton to be visible...');
         await this.page.waitForLoadState('networkidle'); // Chờ cho trang tải xong
         await this.createHomeButton.waitFor({ state: 'visible', timeout: 10000 }); // Thay selector cho đúng
         await this.createHomeButton.click();
-
         //await this.createHomeButton.click();
     }
+    
     //template
     async clickcreateWithTemplateButton(){
         await this.createWithTemplateButton.click();
