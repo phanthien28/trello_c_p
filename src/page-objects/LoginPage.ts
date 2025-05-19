@@ -18,7 +18,7 @@ export class LoginPage{
         this.continueButton = page.locator('button[id = "login-submit"]');
         this.passwordInput = page.locator('input[type = "password"]');
         this.loginButton = page.locator('#login-submit span.css-178ag6o');
-        this.goDashboardButton = page.locator("div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
+        this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
 
         //div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']
     }
@@ -26,7 +26,6 @@ export class LoginPage{
     async goto(url: string) {
         await this.page.goto(url);
         await this.page.waitForLoadState('networkidle'); // chờ network ổn định
-        console.log('Navigating to URL:', url);
         await this.loginButtonHome.waitFor({ state: 'visible',timeout: 30000 });
     }
 
@@ -68,6 +67,7 @@ export class LoginPage{
     }
 
     async clickGoDashboardButton() {
+        await this.goDashboardButton.waitFor({ state: 'visible', timeout: 5000 });
         await this.goDashboardButton.click();
     }
 
