@@ -67,7 +67,7 @@ export class LoginPage{
     }
 
     async clickGoDashboardButton() {
-        await this.goDashboardButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.goDashboardButton.waitFor({ state: 'visible', timeout: 30000 });
         await this.goDashboardButton.click();
     }
 

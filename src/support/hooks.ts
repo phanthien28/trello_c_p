@@ -26,33 +26,44 @@ BeforeAll(async function() {
 });
 
 Before({ tags: '@home' }, async function() {
-    if (!isLoggedIn) {
-        // Xử lý đăng nhập cho home feature
-        context = await browser.newContext({
-            viewport: null,
-        });
-        page = await context.newPage();
-        this.context = context;
-        this.page = page;
-        this.loginPage = new LoginPage(page);
-        this.auth = new Authentication(page);
+    try {
+        if (!isLoggedIn) {
+            context = await browser.newContext({
+                viewport: null,
+            });
+            page = await context.newPage();
+            this.context = context;
+            this.page = page;
+            this.loginPage = new LoginPage(page);
+            this.auth = new Authentication(page);
 
-        await this.auth.login(process.env.EMAIL!, process.env.PASSWORD!);
-        await context.storageState({ path: storageStatePath });
-        isLoggedIn = true;
-    } else {
-        // Tái sử dụng session cho các scenario tiếp theo
-        context = await browser.newContext({
-            storageState: storageStatePath
-        });
-        page = await context.newPage();
-        this.context = context;
-        this.page = page;
+            // Điều hướng đến trang Trello trước khi đăng nhập
+            await page.goto('https://trello.com');
+            await this.auth.login(process.env.EMAIL!, process.env.PASSWORD!);
+            await context.storageState({ path: storageStatePath });
+            isLoggedIn = true;
+        } else {
+            context = await browser.newContext({
+                storageState: storageStatePath,
+                viewport: null
+            });
+            page = await context.newPage();
+            this.context = context;
+            this.page = page;
+
+            // Điều hướng đến trang home sau khi tái sử dụng session
+            await page.goto('https://trello.com/home');
+        }
+
+        // Đợi trang load hoàn tất
+        await page.waitForLoadState('networkidle');
+    } catch (error) {
+        console.error('Error in @home hook:', error);
+        throw error;
     }
 });
 
 Before({ tags: '@login' }, async function() {
-    // Hook riêng cho login feature
     context = await browser.newContext({
         viewport: null,
     });
@@ -64,7 +75,6 @@ Before({ tags: '@login' }, async function() {
 
 After(async function() {
     await context.close();
-    // Không đóng browser ở đây
 });
 
 AfterAll(async function(){
