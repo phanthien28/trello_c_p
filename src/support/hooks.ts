@@ -1,10 +1,9 @@
 import {BeforeAll, AfterAll, Before, After, setDefaultTimeout} from '@cucumber/cucumber';
-import { Browser, BrowserContext, chromium, firefox, webkit, Page } from '@playwright/test';
+import { Browser, BrowserContext, chromium, Page } from '@playwright/test';
 import { LoginPage } from '../page-objects/LoginPage';
 import { Authentication } from '../support/authentication';
 import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as path from 'path';
+
 
 dotenv.config();
 
@@ -12,9 +11,8 @@ let browser: Browser;
 let context: BrowserContext;
 let page: Page;
 let auth: Authentication;
+let isFirstScenario = true;
 let isLoggedIn = false;
-
-const storageStatePath = path.join(__dirname, '..', 'storage-state.json');
 
 setDefaultTimeout(60000);
 
@@ -25,55 +23,64 @@ BeforeAll(async function() {
     });
 });
 
-Before({ tags: '@home' }, async function() {
-    if (!isLoggedIn) {
-        // Xử lý đăng nhập cho home feature
+
+AfterAll(async function(){
+    await browser.close();
+});
+
+Before( {tags :'@login'},async function() {
+    context = await browser.newContext({
+        viewport: null,
+    });
+    const page = await context.newPage();
+    
+    this.context = context;
+    this.page = page;
+    this.loginPage = new LoginPage(page);
+    this.auth = new Authentication(page);
+});
+
+Before({tags: '@home'}, async function() {
+    try {
         context = await browser.newContext({
             viewport: null,
         });
-        page = await context.newPage();
+        const page = await context.newPage();
+        
         this.context = context;
         this.page = page;
         this.loginPage = new LoginPage(page);
         this.auth = new Authentication(page);
 
-        await this.auth.login(process.env.EMAIL!, process.env.PASSWORD!);
-        await context.storageState({ path: storageStatePath });
-        isLoggedIn = true;
-    } else {
-        // Tái sử dụng session cho các scenario tiếp theo
-        context = await browser.newContext({
-            storageState: storageStatePath
-        });
-        page = await context.newPage();
-        this.context = context;
-        this.page = page;
+        const email = process.env.EMAIL;
+        const password = process.env.PASSWORD;
+        if (!email || !password) {
+            throw new Error('EMAIL or PASSWORD not defined in file .env');
+        }
+
+        if (!isLoggedIn) {
+            await this.auth.login(email, password, true);
+            isLoggedIn = true;
+        } else {
+            await this.auth.login(email, password, false);
+        }
+
+    } catch (error) {
+        console.error('Error in @home hook:', error);
+        throw error;
     }
 });
 
-Before({ tags: '@login' }, async function() {
-    // Hook riêng cho login feature
-    context = await browser.newContext({
-        viewport: null,
-    });
-    page = await context.newPage();
-    this.context = context;
-    this.page = page;
-    this.loginPage = new LoginPage(page);
+After(async function(){
+    // Clear all cookies
+    await this.context.clearCookies();
+    
+    // Clear browser cache
+    const client = await this.page.context().newCDPSession(this.page);
+    await client.send('Network.clearBrowserCache');
+    await client.send('Network.clearBrowserCookies');
+    
+    // Close page and context
+    await this.page.close();
+    await this.context.close();
 });
-
-After(async function() {
-    await context.close();
-    // Không đóng browser ở đây
-});
-
-AfterAll(async function(){
-    isLoggedIn = false;
-    await browser.close();
-    // Xóa file storage state sau khi hoàn thành tất cả test
-    if (fs.existsSync(storageStatePath)) {
-        fs.unlinkSync(storageStatePath);
-    }
-});
-
-
