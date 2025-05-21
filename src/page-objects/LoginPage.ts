@@ -1,74 +1,59 @@
-import {expect, type Locator, type Page} from '@playwright/test';
+import {expect, type Page} from '@playwright/test';
+import { LoginPageSelectors } from './LoginPageSelectors';
 
 export class LoginPage{
 
-    readonly page: Page;
-    readonly loginButtonHome: Locator;
-    readonly emailInput: Locator;
-    readonly continueButton: Locator;
-    readonly passwordInput: Locator;
-    readonly loginButton: Locator;
-    readonly goDashboardButton: Locator;
+    private selectors: LoginPageSelectors;
 
     constructor(page: Page) {
-        this.page = page;
-        //this.loginButtonHome = page.locator("//a[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login' and text() = 'Log in']");
-        this.loginButtonHome = page.locator("//div[@class = 'BigNavstyles__InnerHeader-sc-1mttgq7-2 kuxyBF']//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']//a[@class = 'Buttonsstyles__Button-sc-1jwidxo-0 kTwZBr']");
-        this.emailInput = page.locator("//input[@data-testid = 'username']");
-        this.continueButton = page.locator('button[id = "login-submit"]');
-        this.passwordInput = page.locator('input[type = "password"]');
-        this.loginButton = page.locator('#login-submit span.css-178ag6o');
-        this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
-
-        //div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']
+        this.selectors = new LoginPageSelectors(page);
     }
 
     async goto(url: string) {
-        await this.page.goto(url);
-        await this.page.waitForLoadState('networkidle'); // chờ network ổn định
-        await this.loginButtonHome.waitFor({ state: 'visible',timeout: 30000 });
+        await this.selectors.page.goto(url);
+        await this.selectors.page.waitForLoadState('networkidle');
+        await this.selectors.loginButtonHome.waitFor({ state: 'visible', timeout: 30000 });
     }
 
     async clickLoginHome() {
-        await this.page.waitForLoadState('domcontentloaded');
-        await this.page.waitForLoadState('networkidle'); // chờ network ổn định
-        await this.loginButtonHome.waitFor({ state: 'visible'});
-        await this.loginButtonHome.click();
+        await this.selectors.page.waitForLoadState('domcontentloaded');
+        await this.selectors.page.waitForLoadState('networkidle');
+        await this.selectors.loginButtonHome.waitFor({ state: 'visible' });
+        await this.selectors.loginButtonHome.click();
     }
 
-    async fillEmail(emailInput:string) {
-        await expect(this.emailInput).toBeVisible();
-        const valueAfterClear = await this.emailInput.inputValue();
+    async fillEmail(emailInput: string) {
+        await expect(this.selectors.emailInput).toBeVisible();
+        const valueAfterClear = await this.selectors.emailInput.inputValue();
         await expect(valueAfterClear).toBe('');
-        await this.emailInput.fill(emailInput);
+        await this.selectors.emailInput.fill(emailInput);
     }
 
     async clickContinue() {
-        await this.continueButton.waitFor({ state: 'visible' });
-        await this.continueButton.click();
-    }   
+        await this.selectors.continueButton.waitFor({ state: 'visible' });
+        await this.selectors.continueButton.click();
+    }
 
-    async fillPassword(passwordInput:string) {
-        await expect(this.passwordInput).toBeVisible();
-        const valueAfterClear = await this.passwordInput.inputValue();
+    async fillPassword(passwordInput: string) {
+        await expect(this.selectors.passwordInput).toBeVisible();
+        const valueAfterClear = await this.selectors.passwordInput.inputValue();
         await expect(valueAfterClear).toBe('');
-        await this.passwordInput.fill(passwordInput);  
+        await this.selectors.passwordInput.fill(passwordInput);
     }
 
     async clickLogin() {
-        await this.loginButton.waitFor({ state: 'visible', timeout: 10000 });
-        await this.loginButton.click();
+        await this.selectors.loginButton.waitFor({ state: 'visible', timeout: 10000 });
+        await this.selectors.loginButton.click();
     }
 
-    async login(email: string, password: string){
+    async login(email: string, password: string) {
         await this.fillEmail(email);
         await this.clickContinue();
         await this.fillPassword(password);
     }
 
     async clickGoDashboardButton() {
-        await this.goDashboardButton.waitFor({ state: 'visible', timeout: 30000 });
-        await this.goDashboardButton.click();
+        await this.selectors.goDashboardButton.waitFor({ state: 'visible', timeout: 30000 });
+        await this.selectors.goDashboardButton.click();
     }
-
 }

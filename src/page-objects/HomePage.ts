@@ -1,131 +1,106 @@
-import {expect, type Locator, type Page} from '@playwright/test';
+import {expect, type Page} from '@playwright/test';
+import { HomePageSelectors } from './HomePageSelectors';
 
-export class HomePage{
-
-    readonly page: Page;
-    readonly createHomeButton: Locator;
-    readonly createBoardButton: Locator;
-    readonly createWithTemplateButton: Locator;
-    readonly teamPlate: Locator;
-    readonly boardTille: Locator;
-    readonly createButton: Locator;
- 
-    readonly viewBoardButton: Locator;
-
-    readonly deleteButton: Locator;
-    readonly deleteConfirmButton: Locator;
-
-    readonly reopenButton: Locator;
-    readonly reopenConfirmButton: Locator;
+export class HomePage {
+    private selectors: HomePageSelectors;
 
     constructor(page: Page) {
-        this.page = page;
-        this.createHomeButton = page.locator("//button[@data-testid = 'header-create-menu-button']");
-        this.createBoardButton = page.locator("//button[@data-testid = 'header-create-board-button']");
-        this.createWithTemplateButton = page.locator("//button[@data-testid =  'header-create-board-from-template-button']");
-        this.teamPlate = page.locator("//ul/li[6]/div[@class = 'VUUgUoReMgQcjG']");
-        this.boardTille = page.locator("//input[@type = 'text']");
-        this.createButton = page.locator("//button[@data-testid = 'create-board-submit-button']");
-        this.viewBoardButton = page.locator("//button[contains(text(), 'View all closed boards')]");
-        this.deleteButton = page.locator("//ul//li[1]/div/button[@data-testid = 'close-board-delete-board-button']");
-        this.deleteConfirmButton = page.locator("//button[text() = 'Delete' and @data-testid = 'close-board-delete-board-confirm-button']");
-        this.reopenButton = page.locator("//ul//li[1]//button[@data-testid = 'workspace-chooser-trigger-button' and text() = 'Reopen']");
-        this.reopenConfirmButton = page.locator("//div//button[@data-testid= 'workspace-chooser-reopen-button' and text() = 'Reopen board']");
+        this.selectors = new HomePageSelectors(page);
     }
 
-    async clickCreateHomeButton(){
-        await this.page.waitForLoadState('networkidle'); // Chờ cho trang tải xong
-        await this.createHomeButton.waitFor({ state: 'visible', timeout: 10000 }); // Thay selector cho đúng
-        await this.createHomeButton.click();
-        //await this.createHomeButton.click();
+    async clickCreateHomeButton() {
+        await this.selectors.page.waitForLoadState('networkidle');
+        await this.selectors.createHomeButton.waitFor({ state: 'visible', timeout: 10000 });
+        await this.selectors.createHomeButton.click();
     }
     
-    //template
-    async clickcreateWithTemplateButton(){
-        await this.createWithTemplateButton.click();
-    }
-    //template
-    async clicktemPlate(){
-        await this.teamPlate.click();
+    async clickCreateWithTemplateButton() {
+        await this.selectors.createWithTemplateButton.waitFor({ state: 'visible' });
+        await this.selectors.createWithTemplateButton.click();
     }
 
-    async clickCreateBoardButton(){
-        await this.createBoardButton.click();
+    async clickTemplate() {
+        await this.selectors.temPlate.waitFor({ state: 'visible' });
+        await this.selectors.temPlate.click();
     }
 
-    async fillBoardTitle(boardTitle: string){
-        await this.boardTille.fill(boardTitle);
+    async clickCreateBoardButton() {
+        await this.selectors.createBoardButton.waitFor({ state: 'visible' });
+        await this.selectors.createBoardButton.click();
     }
 
-    async clickCreateButton(){
-        await this.createButton.click();
+    async fillBoardTitle(boardTitle: string) {
+        await this.selectors.boardTitle.waitFor({ state: 'visible' });
+        await this.selectors.boardTitle.fill(boardTitle);
     }
 
-    //create board
+    async clickCreateButton() {
+        await this.selectors.createButton.waitFor({ state: 'visible', timeout: 10000 });
+        await this.selectors.createButton.click();
+    }
     
     async createBoard(boardTitle: string) {
-        await this.clickCreateHomeButton();
-        await this.clickCreateBoardButton();
-        await this.fillBoardTitle(boardTitle);
-        await this.page.waitForTimeout(2000); 
+        try {
+            await this.clickCreateHomeButton();
+            await this.clickCreateBoardButton();
+            await this.fillBoardTitle(boardTitle);
+            await this.clickCreateButton();
+            await this.selectors.page.waitForTimeout(2000);
+        } catch (error) {
+            throw new Error(`Failed to create board: ${error}`);
+        }
     }
 
-     //create board from template
-    async createBoardFromTemplate(){
-        await this.clickCreateHomeButton();
-        await this.clickcreateWithTemplateButton();
-        await this.clicktemPlate();
-        await this.page.waitForTimeout(2000);
+    async createBoardFromTemplate() {
+        try {
+            await this.clickCreateHomeButton();
+            await this.clickCreateWithTemplateButton();
+            await this.clickTemplate();
+            await this.selectors.page.waitForTimeout(2000);
+        } catch (error) {
+            throw new Error(`Failed to create board from template: ${error}`);
+        }
     }
 
-    async deleteBoard(){
-        await expect(this.viewBoardButton).toBeVisible();
-        await this.viewBoardButton.click();
+    async deleteBoard() {
+        try {
+            await expect(this.selectors.viewBoardButton).toBeVisible();
+            await this.selectors.viewBoardButton.click();
 
-        await expect(this.deleteButton).toBeVisible();
-        await expect(this.deleteButton).toBeEnabled();
-        await this.deleteButton.click();
+            await expect(this.selectors.deleteButton).toBeVisible();
+            await expect(this.selectors.deleteButton).toBeEnabled();
+            await this.selectors.deleteButton.click();
 
-        await expect(this.deleteConfirmButton).toBeVisible();
-        await expect(this.deleteConfirmButton).toBeEnabled();
-        await this.deleteConfirmButton.click();
+            await expect(this.selectors.deleteConfirmButton).toBeVisible();
+            await expect(this.selectors.deleteConfirmButton).toBeEnabled();
+            await this.selectors.deleteConfirmButton.click();
+        } catch (error) {
+            throw new Error(`Failed to delete board: ${error}`);
+        }
     }
 
-    // async reopenBoard(){
-    //     await expect(this.viewBoardButton).toBeVisible();
-    //     await this.viewBoardButton.click();
-        
-    //     await expect(this.reopenButton).toBeVisible();
-    //     await expect(this.reopenButton).toBeEnabled();
-    //     await this.reopenButton.click();
-
-    //     await expect(this.reopenConfirmButton).toBeVisible();
-    //     await expect(this.reopenConfirmButton).toBeEnabled();
-    //     await this.reopenConfirmButton.click();
-
-    // }
-
-    async reopenBoard(){
-        await expect(this.viewBoardButton).toBeVisible();
-        await this.viewBoardButton.click();
-        await this.page.waitForTimeout(1000);
-        
-        // Kiểm tra sự tồn tại của board đã đóng
-        const hasClosedBoard = await this.reopenButton.isVisible().catch(() => false); // Trả về false nếu không tìm thấy element
-        
-        if (hasClosedBoard) {
+    async reopenBoard() {
+        try {
+            await expect(this.selectors.viewBoardButton).toBeVisible();
+            await this.selectors.viewBoardButton.click();
+            await this.selectors.page.waitForTimeout(1000);
             
-            await expect(this.reopenButton).toBeEnabled();
-            await this.reopenButton.click();
-    
-            await expect(this.reopenConfirmButton).toBeVisible();
-            await expect(this.reopenConfirmButton).toBeEnabled();
-            await this.reopenConfirmButton.click();
+            const hasClosedBoard = await this.selectors.reopenButton.isVisible().catch(() => false);
             
-            return true;
-        } else {
+            if (hasClosedBoard) {
+                await expect(this.selectors.reopenButton).toBeEnabled();
+                await this.selectors.reopenButton.click();
+        
+                await expect(this.selectors.reopenConfirmButton).toBeVisible();
+                await expect(this.selectors.reopenConfirmButton).toBeEnabled();
+                await this.selectors.reopenConfirmButton.click();
+                
+                return true;
+            }
             console.log("No boards have been closed");
-            return false; 
+            return false;
+        } catch (error) {
+            throw new Error(`Failed to reopen board: ${error}`);
         }
     }
 }
