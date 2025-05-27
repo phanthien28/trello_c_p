@@ -39,7 +39,7 @@ export class HomePageSelectors{
         this.reopenButton = page.locator("//ul//li[1]//button[@data-testid = 'workspace-chooser-trigger-button' and text() = 'Reopen']");
         this.reopenConfirmButton = page.locator("//div//button[@data-testid= 'workspace-chooser-reopen-button' and text() = 'Reopen board']");
 
-         this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
+        this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
 
         this.newBoard = page.locator("//div[@class = 'RPO6eTW4FLJhI0']//div[@class = 'hiRkezEUBG7ve6 uXhW3KBBr1jUsJ']");
         this.newTemplateBoard = page.locator("//div[@data-testid = 'board-name-container']");
