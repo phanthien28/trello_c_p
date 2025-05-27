@@ -1,6 +1,6 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect, Page } from '@playwright/test';
-import { LoginPage } from '../page-objects/LoginPage';
+import { LoginPage } from '../pages/actions/LoginPage';
 
 let loginPage: LoginPage;
 
@@ -34,26 +34,28 @@ Then('user redirects dashboard', async function(){
     await expect(this.page).toHaveURL(/.*\/boards/);
 });
 
-Then('system display error message', async function(){
-    const errorMessage = this.page.getByText('Incorrect email address and / or password.');
+Then('system display error message', async function() {
+    const errorMessage = await loginPage.getErrorMessage();
     await expect(errorMessage).toBeVisible();
 });
 
-Then('display alert', async function(){
-    await expect(this.page.locator("//div[@class=\'css-1f0jn2w\']")).toBeVisible();
+Then('display alert', async function() {
+    const alertMessage = await loginPage.getAlertMessage();
+    await expect(alertMessage).toBeVisible();
 });
 
-Then('display input password', async function(){
-    const input = this.page.locator("input[type = 'password']");
-    await expect(input).toBeVisible();
+Then('display input password', async function() {
+    const passwordInput = await loginPage.getPasswordInput();
+    await expect(passwordInput).toBeVisible();
 });
 
-Then('display alert1', async function(){
-   await expect(this.page.locator("//div[@class=\'css-1f0jn2w\']")).toBeVisible();
+Then('display alert1', async function() {
+    const alertMessage = await loginPage.getAlertMessage();
+    await expect(alertMessage).toBeVisible();
 });
 
-Then('redirects sign up page', async function(){
-    await this.page.waitForLoadState('networkidle');
-    await expect(this.page.locator("//div[@class = 'css-146wmq']")).toBeVisible();
+Then('redirects sign up page', async function() {
+    const signUpMessage = await loginPage.getSignUpMessage();
+    await expect(signUpMessage).toBeVisible();
 });
 
