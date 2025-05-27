@@ -1,4 +1,4 @@
-import { LoginPage } from '../page-objects/LoginPage';
+import { LoginPage } from '../pages/actions/LoginPage';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

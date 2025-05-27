@@ -1,6 +1,7 @@
-import {BeforeAll, AfterAll, Before, After, setDefaultTimeout} from '@cucumber/cucumber';
+import {BeforeAll, AfterAll, Before, After, BeforeStep, AfterStep, setDefaultTimeout, } from '@cucumber/cucumber';
 import { Browser, BrowserContext, chromium, Page } from '@playwright/test';
-import { LoginPage } from '../page-objects/LoginPage';
+import { LoginPage } from '../pages/actions/LoginPage';
+import { HomePage } from '../pages/actions/HomePage';
 import { Authentication } from '../support/authentication';
 import * as dotenv from 'dotenv';
 
@@ -50,6 +51,7 @@ Before({tags: '@home'}, async function() {
         this.context = context;
         this.page = page;
         this.loginPage = new LoginPage(page);
+        this.homePage = new HomePage(page);
         this.auth = new Authentication(page);
 
         const email = process.env.EMAIL;
@@ -71,16 +73,60 @@ Before({tags: '@home'}, async function() {
     }
 });
 
+BeforeStep(async function() {
+    await this.context.addCookies([{
+        name: 'playwright_test_cookie',
+        value: 'thien',
+        domain: '.trello.com',
+        path: '/',
+        expires: -1,
+    }]);
+    console.log('Cookie added success');
+});
+
+AfterStep(async function() {
+    if (this.context) {
+        await this.context.deleteCookies([{
+            name: 'playwright_test_cookie',
+            domain: '.trello.com',
+            path: '/'
+        }]);
+    }
+});
+
+// After(async function(){
+//     // Clear all cookies
+//     await this.context.clearCookies();
+    
+//     // Clear browser cache
+//     const client = await this.page.context().newCDPSession(this.page);
+//     await client.send('Network.clearBrowserCache');
+//     await client.send('Network.clearBrowserCookies');
+    
+//     // Close page and context
+//     await this.page.close();
+//     await this.context.close();
+// });
+
 After(async function(){
-    // Clear all cookies
-    await this.context.clearCookies();
+    if (this.context) {
+        await this.context.clearCookies();
+    }
     
-    // Clear browser cache
-    const client = await this.page.context().newCDPSession(this.page);
-    await client.send('Network.clearBrowserCache');
-    await client.send('Network.clearBrowserCookies');
+    if (this.page) {
+        // Clear browser cache using CDP
+        const client = await this.page.context().newCDPSession(this.page);
+        await Promise.all([
+            client.send('Network.clearBrowserCache'),
+            client.send('Network.clearBrowserCookies')
+        ]);
+        
+        // Close page
+        await this.page.close();
+    }
     
-    // Close page and context
-    await this.page.close();
-    await this.context.close();
+    // Close context
+    if (this.context) {
+        await this.context.close(); 
+    }
 });

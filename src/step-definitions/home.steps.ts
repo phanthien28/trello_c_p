@@ -1,6 +1,6 @@
 import { Given, When, Then } from "@cucumber/cucumber";
 import { expect, Page } from "@playwright/test";
-import { HomePage } from "../page-objects/HomePage";
+import { HomePage } from "../pages/actions/HomePage";
 
 let homePage: HomePage;
 
@@ -32,21 +32,21 @@ When('user click View all boards closed and reopen', async function(){
 });
 
 Then('user should see the new board "My New Board" in the list of boards', async function(){
-    const newBoard = this.page.locator("//div[@data-testid = 'board-name-container']");
+    const newBoard = await homePage.getNewBoard();
     await expect(newBoard).toBeVisible();
 });
 
 Then('user should see the new board from template in the list of boards', async function(){
-    const newTemplateBoard = this.page.locator("//div[@data-testid = 'board-name-container']");
+    const newTemplateBoard = await homePage.getNewTemplateBoard();
     await expect(newTemplateBoard).toBeVisible();
 });
 
 Then('user should see the boards deleted successfully', async function (){
-    const  messageDelete = this.page.locator("//div[@class = 'a4ZvSL0pjeULBU']//span[text() = 'Board deleted.']");
+    const  messageDelete = await homePage.getDeleteMessage();
     await expect(messageDelete).toBeVisible();
 });
 
 Then('user should see the boards reopened successfully', async function(){
-    const reopen = this.page.locator("//ul//li[@class= 'boards-page-board-section-list-item'][1]");
+    const reopen = await homePage.getReopenedBoard();
     await expect(reopen).toBeVisible();
 });

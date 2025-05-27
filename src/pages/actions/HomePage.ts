@@ -1,5 +1,6 @@
-import {expect, type Page} from '@playwright/test';
-import { HomePageSelectors } from './HomePageSelectors';
+import { expect, type Page } from '@playwright/test';
+import { HomePageSelectors } from '../selectors/HomePageSelectors';
+import { click, isVisible, type, waitForLoad } from '../../common/actionHelpers';
 
 export class HomePage {
     private selectors: HomePageSelectors;
@@ -9,46 +10,50 @@ export class HomePage {
     }
 
     async clickCreateHomeButton() {
-        await this.selectors.page.waitForLoadState('networkidle');
-        await this.selectors.createHomeButton.waitFor({ state: 'visible', timeout: 10000 });
-        await this.selectors.createHomeButton.click();
+        await waitForLoad(this.selectors.page);
+        await click(this.selectors.createHomeButton);
     }
     
     async clickCreateWithTemplateButton() {
-        await this.selectors.createWithTemplateButton.waitFor({ state: 'visible' });
-        await this.selectors.createWithTemplateButton.click();
+        await click(this.selectors.createWithTemplateButton);
     }
 
     async clickTemplate() {
-        await this.selectors.temPlate.waitFor({ state: 'visible' });
-        await this.selectors.temPlate.click();
+        await click(this.selectors.temPlate);
     }
 
     async clickCreateBoardButton() {
-        await this.selectors.createBoardButton.waitFor({ state: 'visible' });
-        await this.selectors.createBoardButton.click();
+        await click(this.selectors.createBoardButton);
+    }
+
+    async selectTemplate() {
+        await click(this.selectors.selectTemplateButton);
     }
 
     async fillBoardTitle(boardTitle: string) {
-        await this.selectors.boardTitle.waitFor({ state: 'visible' });
-        await this.selectors.boardTitle.fill(boardTitle);
+        await type(this.selectors.boardTitle, boardTitle);
     }
 
     async clickCreateButton() {
-        await this.selectors.createButton.waitFor({ state: 'visible', timeout: 10000 });
-        await this.selectors.createButton.click();
+        await click(this.selectors.createButton);
+        await this.selectors.page.waitForTimeout(1000);
     }
     
     async createBoard(boardTitle: string) {
         try {
             await this.clickCreateHomeButton();
             await this.clickCreateBoardButton();
+            await this.selectTemplate();
             await this.fillBoardTitle(boardTitle);
-            await this.clickCreateButton();
+           // await this.clickCreateButton();
             await this.selectors.page.waitForTimeout(2000);
         } catch (error) {
             throw new Error(`Failed to create board: ${error}`);
         }
+    }
+
+    async getNewBoard(){
+        return this.selectors.newBoard;
     }
 
     async createBoardFromTemplate() {
@@ -62,21 +67,27 @@ export class HomePage {
         }
     }
 
+    async getNewTemplateBoard(){
+        return this.selectors.newTemplateBoard;
+    }
+
     async deleteBoard() {
         try {
-            await expect(this.selectors.viewBoardButton).toBeVisible();
-            await this.selectors.viewBoardButton.click();
+            await isVisible(this.selectors.viewBoardButton);
+            await click(this.selectors.viewBoardButton);
 
-            await expect(this.selectors.deleteButton).toBeVisible();
-            await expect(this.selectors.deleteButton).toBeEnabled();
-            await this.selectors.deleteButton.click();
+            await isVisible(this.selectors.deleteButton);
+            await click(this.selectors.deleteButton);
 
-            await expect(this.selectors.deleteConfirmButton).toBeVisible();
-            await expect(this.selectors.deleteConfirmButton).toBeEnabled();
-            await this.selectors.deleteConfirmButton.click();
+            await isVisible(this.selectors.deleteConfirmButton);
+            await click(this.selectors.deleteConfirmButton);
         } catch (error) {
             throw new Error(`Failed to delete board: ${error}`);
         }
+    }
+
+    async getDeleteMessage(){
+        return this.selectors.messageDelete;
     }
 
     async reopenBoard() {
@@ -103,4 +114,9 @@ export class HomePage {
             throw new Error(`Failed to reopen board: ${error}`);
         }
     }
+
+    async getReopenedBoard(){
+        return this.selectors.reopenedBoard;
+    }
+
 }

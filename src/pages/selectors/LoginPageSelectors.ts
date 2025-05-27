@@ -10,6 +10,11 @@ export class LoginPageSelectors {
     readonly loginButton: Locator;
     readonly goDashboardButton: Locator;
 
+    //Locators expect
+    readonly errorMessage: Locator;
+    readonly alertMessage: Locator;
+    readonly signUpMessage: Locator;
+
     constructor(page: Page) {
         this.page = page;
         //this.loginButtonHome = page.locator("//a[@data-uuid='MJFtCCgVhXrVl7v9HA7EH_login' and text() = 'Log in']");
@@ -19,6 +24,9 @@ export class LoginPageSelectors {
         this.passwordInput = page.locator('input[type = "password"]');
         this.loginButton = page.locator('#login-submit span.css-178ag6o');
         this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
-        //div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']
-    }
+        
+        this.errorMessage = page.getByText('Incorrect email address and / or password.');
+        this.alertMessage = page.locator("//div[@class='css-1f0jn2w']");
+        this.signUpMessage = page.locator("//div[@class = 'css-146wmq']");
+    }   
 }
