@@ -6,7 +6,6 @@ import { Authentication } from '../support/authentication';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 
-
 dotenv.config();
 
 let browser: Browser;
