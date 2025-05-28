@@ -4,10 +4,24 @@ import { HomePage } from "../pages/actions/HomePage";
 
 let homePage: HomePage;
 
+// Given('user at the home page', async function () {
+//     homePage = new HomePage(this.page);
+//     await this.page.waitForURL('**/boards', { timeout: 15000 });
+//     await expect(this.page).toHaveURL(/.*\/boards/);
+// });
+
 Given('user at the home page', async function () {
     homePage = new HomePage(this.page);
-    await this.page.waitForURL('**/boards', { timeout: 15000 });
-    await expect(this.page).toHaveURL(/.*\/boards/);
+    const currentUrl = this.page.url();
+
+    if (currentUrl.includes('/boards')) {
+        await this.page.waitForURL('**/boards', { timeout: 15000 });
+        await expect(this.page).toHaveURL(/.*\/boards/);
+    } else {
+        await homePage.clickGoDashboardButton();
+        await this.page.waitForURL('**/boards', { timeout: 15000 });
+        await expect(this.page).toHaveURL(/.*\/boards/);
+    }
 });
 
 When('user click on Create button enter board tille {string}', async function(boardTitle: string) {

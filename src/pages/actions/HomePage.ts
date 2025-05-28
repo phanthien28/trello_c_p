@@ -119,4 +119,8 @@ export class HomePage {
         return this.selectors.reopenedBoard;
     }
 
+    async clickGoDashboardButton() {
+        await click(this.selectors.goDashboardButton);
+    }
+
 }
