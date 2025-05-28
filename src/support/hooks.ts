@@ -1,4 +1,4 @@
-import {BeforeAll, AfterAll, Before, After, setDefaultTimeout} from '@cucumber/cucumber';
+import {BeforeAll, AfterAll, Before, After, setDefaultTimeout, BeforeStep, AfterStep} from '@cucumber/cucumber';
 import { Browser, BrowserContext, chromium, Page } from '@playwright/test';
 import { LoginPage } from '../pages/actions/LoginPage';
 import { HomePage } from '../pages/actions/HomePage';
@@ -20,6 +20,7 @@ setDefaultTimeout(60000);
 BeforeAll(async function() {
     browser = await chromium.launch({
         headless: false,
+        //args: [ '--start-maximized' ],
         args: ['--window-size=1920,1080','--start-maximized'],
     });
 });
@@ -27,7 +28,7 @@ BeforeAll(async function() {
 Before({tags: '@login'}, async function() {
     try {
         context = await browser.newContext({
-            viewport: null
+            viewport: null,
         });
         page = await context.newPage();
         
@@ -46,7 +47,7 @@ Before({tags: '@home'}, async function() {
         if (isFirstRun) {
             // First run - perform login and save state
             context = await browser.newContext({
-                viewport: null
+                viewport: null,
             });
             
             page = await context.newPage();
@@ -97,6 +98,17 @@ Before({tags: '@home'}, async function() {
         throw error;
     }
 });
+
+// Add Cookies
+// BeforeStep(async function() {
+//     await this.context.addCookies([{
+//         name: 'test_cookie',
+//         value: 'test_value',
+//         domain: '.trello.com',
+//         path: '/',
+//     }]);
+//     console.log('Cookie added', await this.context.cookies());
+// });
 
 After(async function() {
     if (this.page) {

@@ -18,10 +18,8 @@ export class Authentication {
     await this.loginPage.clickContinue();
     await this.loginPage.fillPassword(password);
     await this.loginPage.clickLogin();
-    // Đợi chuyển hướng đến trang dashboard
+    // wait redirect to dashboard
     await this.page.waitForURL('**/boards**', { waitUntil: 'domcontentloaded', timeout: 40000 });
-    
-    // Lưu trạng thái đăng nhập vào file auth.json
-    await this.context.storageState({ path: 'auth.json' });
+  
   }
 }
