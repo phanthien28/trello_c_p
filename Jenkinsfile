@@ -21,11 +21,11 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npx cucumber-js --tags "@login or @home"'
+                sh 'npx cucumber-js'
             }
         }
     }
-
+    
     post {
         always {
             cleanWs()
