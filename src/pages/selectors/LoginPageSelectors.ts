@@ -13,6 +13,7 @@ export class LoginPageSelectors {
     //Locators expect
     readonly errorMessage: Locator;
     readonly alertMessage: Locator;
+    readonly alerMessage1: Locator;
     readonly signUpMessage: Locator;
 
     constructor(page: Page) {
@@ -26,7 +27,8 @@ export class LoginPageSelectors {
         this.goDashboardButton = page.locator("//div[@class = 'Buttonsstyles__ButtonGroup-sc-1jwidxo-3 jnMZCI']/a[text() = 'Go to your boards']");
         
         this.errorMessage = page.getByText('Incorrect email address and / or password.');
-        this.alertMessage = page.locator("//div[@class= 'css-1f0jn2w']");
+        this.alertMessage = page.locator("//input[@data-testid = 'username']");
+        this.alerMessage1 = page.locator("//input[@data-testid = 'password']");
         this.signUpMessage = page.locator("//div[@class = 'css-146wmq']");
     }   
 }

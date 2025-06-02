@@ -1,6 +1,6 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import { expect, Page } from '@playwright/test';
-import { LoginPage } from '../pages/actions/LoginPage';
+import { LoginPage } from '../pages/page_objects/LoginPage';
 
 let loginPage: LoginPage;
 

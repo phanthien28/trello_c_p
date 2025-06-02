@@ -1,4 +1,4 @@
-import { LoginPage } from '../pages/actions/LoginPage';
+import { LoginPage } from '../pages/page_objects/LoginPage';
 import * as dotenv from 'dotenv';
 import { BrowserContext } from '@playwright/test';
 

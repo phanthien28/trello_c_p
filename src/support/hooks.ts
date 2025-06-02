@@ -1,7 +1,7 @@
 import {BeforeAll, AfterAll, Before, After, setDefaultTimeout, BeforeStep, AfterStep} from '@cucumber/cucumber';
 import { Browser, BrowserContext, chromium, Page } from '@playwright/test';
-import { LoginPage } from '../pages/actions/LoginPage';
-import { HomePage } from '../pages/actions/HomePage';
+import { LoginPage } from '../pages/page_objects/LoginPage';
+import { HomePage } from '../pages/page_objects/HomePage';
 import { Authentication } from '../support/authentication';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
@@ -19,7 +19,7 @@ setDefaultTimeout(60000);
 
 BeforeAll(async function() {
     browser = await chromium.launch({
-        headless: true,
+        headless: false, // Set to true for headless mode
         //args: [ '--start-maximized' ],
         args: ['--window-size=1920,1080','--start-maximized'],
     });
